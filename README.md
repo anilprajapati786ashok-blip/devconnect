@@ -11,9 +11,7 @@ It is designed to help developers get internships and job opportunities faster u
 
 # 🌐 Live Demo
 
-👉 Frontend: https://your-frontend-link.vercel.app  
-👉 Backend: https://your-backend-link.onrender.com  
-
+👉
 live website:https://devconnect-gray.vercel.app
 
 
