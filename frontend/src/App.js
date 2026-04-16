@@ -22,7 +22,7 @@ function App() {
   const handleSignup = async () => {
     try {
       const res = await axios.post(
-        "https://devconnect-pro-wey9.onrender.com/api/auth/signup",
+        "https://devconnect-8fpj.onrender.com/api/auth/signup",
         form
       );
       localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -35,7 +35,7 @@ function App() {
   const handleLogin = async () => {
     try {
       const res = await axios.post(
-        "https://devconnect-pro-wey9.onrender.com/api/auth/login",
+        "https://devconnect-8fpj.onrender.com/api/auth/login",
         form
       );
       localStorage.setItem("user", JSON.stringify(res.data.user));

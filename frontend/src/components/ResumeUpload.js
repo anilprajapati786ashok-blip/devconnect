@@ -24,7 +24,7 @@ function ResumeUpload() {
     formData.append('resume', file);
 
     try {
-      const res = await axios.post('https://devconnect-pro-wey9.onrender.com/api/resume/upload', formData);
+      const res = await axios.post('https://devconnect-8fpj.onrender.com/api/resume/upload', formData);
 
       setUploadedFile(res.data.resume);
       setAnalysis(null);
@@ -44,7 +44,7 @@ function ResumeUpload() {
     if (!uploadedFile) return alert("Upload resume first ");
 
     try {
-      const res = await axios.post('https://devconnect-pro-wey9.onrender.com/api/analyze-resume', {
+      const res = await axios.post('https://devconnect-8fpj.onrender.com/api/analyze-resume', {
         resumeText: uploadedFile.text
       });
 
@@ -59,7 +59,7 @@ function ResumeUpload() {
     if (!jobDesc) return alert("Paste job description ");
 
     try {
-      const res = await axios.post('https://devconnect-pro-wey9.onrender.com/api/job-match', {
+      const res = await axios.post('https://devconnect-8fpj.onrender.com/api/job-match', {
         resumeText: uploadedFile.text,
         jobDescription: jobDesc
       });
@@ -74,7 +74,7 @@ function ResumeUpload() {
     if (!uploadedFile) return alert("Upload resume first ");
 
     try {
-      const res = await axios.post('https://devconnect-pro-wey9.onrender.com/api/resume-fixer', {
+      const res = await axios.post('https://devconnect-8fpj.onrender.com/api/resume-fixer', {
         resumeText: uploadedFile.text
       });
 
@@ -88,7 +88,7 @@ function ResumeUpload() {
     if (!uploadedFile) return alert("Upload resume first ");
 
     try {
-      const res = await axios.post('https://devconnect-pro-wey9.onrender.com/api/interview', {
+      const res = await axios.post('https://devconnect-8fpj.onrender.com/api/interview', {
         resumeText: uploadedFile.text
       });
 
@@ -107,7 +107,7 @@ function ResumeUpload() {
     setUserMsg("");
 
     try {
-      const res = await axios.post('https://devconnect-pro-wey9.onrender.com/api/mock-interview', {
+      const res = await axios.post('https://devconnect-8fpj.onrender.com/api/mock-interview', {
         resumeText: uploadedFile.text,
         messages: newChat
       });
