@@ -42,7 +42,7 @@ app.use('/api/mock-interview', mockInterviewRoutes);
 // ===== DB Connection =====
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI_ATLAS);
+    await mongoose.connect(process.env.MONGO_URI_LOCAL);
     console.log('MongoDB Atlas connected');
   } catch (err) {
     console.log('Atlas failed, trying local...');
