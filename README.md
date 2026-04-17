@@ -15,8 +15,6 @@ It is designed to help developers get internships and job opportunities faster u
 live website:https://devconnect-gray.vercel.app
 
 
-# 📸 Screenshots ##
-
 ## 🏠 Dashboard Preview
 
 # 🤖 AI Career Suite
@@ -167,6 +165,4 @@ Practice interviews before real ones.
 
 # 📂 Project Setup
 
-## Clone Repository
-```bash
-git clone https://github.com/anilprajapati786ashok-blip/devconnect.git
+live web: https://devconnect-gray.vercel.app
