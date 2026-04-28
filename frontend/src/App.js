@@ -1,19 +1,105 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+
 import Portfolio from "./components/Portfolio";
 import ResumeUpload from "./components/ResumeUpload";
+import MockInterviewVoice from "./components/MockInterviewVoice";
+import AdminDashboard from "./components/AdminDashboard";
 
+/* ================= DASHBOARD ================= */
+function DashboardHome({ user, setActiveTab }) {
+  const cards = [
+    {
+      title: "AI Interview",
+      icon: "🎤",
+      color: "from-blue-500 to-cyan-400",
+      action: () => setActiveTab("voice"),
+    },
+    {
+      title: "Resume Analyzer",
+      icon: "📄",
+      color: "from-purple-500 to-pink-500",
+      action: () => setActiveTab("resume"),
+    },
+    {
+      title: "Portfolio",
+      icon: "💼",
+      color: "from-green-400 to-emerald-500",
+      action: () => setActiveTab("portfolio"),
+    },
+    {
+      title: "Admin Panel",
+      icon: "👤",
+      color: "from-orange-400 to-red-500",
+      action: () => setActiveTab("admin"),
+    },
+  ];
+
+  return (
+    <div className="text-white">
+      {/* Welcome */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <h1 className="text-4xl font-bold">
+          Welcome back,{" "}
+          <span className="text-cyan-400">{user?.name || "User"}</span> 👋
+        </h1>
+        <p className="text-gray-400 mt-2">
+          Ready to crack your next interview? 🚀
+        </p>
+      </motion.div>
+
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {cards.map((card, i) => (
+          <motion.div
+            key={i}
+            onClick={card.action}
+            whileHover={{ scale: 1.05, rotateX: 6, rotateY: -6 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className={`cursor-pointer rounded-2xl p-6 bg-gradient-to-br ${card.color} shadow-xl hover:shadow-cyan-400/40`}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">{card.title}</h2>
+              <span className="text-2xl">{card.icon}</span>
+            </div>
+
+            <p className="text-sm mt-4 opacity-80">
+              Click to explore →
+            </p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+/* ================= APP ================= */
 function App() {
   const [user, setUser] = useState(null);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [isLogin, setIsLogin] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
+  const [isLogin, setIsLogin] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
 
+  const API = "https://devconnect-8fpj.onrender.com";
+  //"https://devconnect-8fpj.onrender.com"//
+
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) setUser(JSON.parse(savedUser));
+    const saved = localStorage.getItem("user");
+    if (saved) setUser(JSON.parse(saved));
   }, []);
 
   const handleChange = (e) =>
@@ -21,10 +107,7 @@ function App() {
 
   const handleSignup = async () => {
     try {
-      const res = await axios.post(
-        "https://devconnect-8fpj.onrender.com/api/auth/signup",
-        form
-      );
+      const res = await axios.post(`${API}/api/auth/signup`, form);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setUser(res.data.user);
     } catch {
@@ -34,10 +117,7 @@ function App() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(
-        "https://devconnect-8fpj.onrender.com/api/auth/login",
-        form
-      );
+      const res = await axios.post(`${API}/api/auth/login`, form);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setUser(res.data.user);
     } catch {
@@ -48,15 +128,20 @@ function App() {
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    setActiveTab("dashboard");
   };
 
   // ================= AUTH =================
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white">
-        <motion.div className="bg-gray-800 p-8 rounded-xl w-80 shadow-xl">
-          <h1 className="text-2xl font-bold mb-5 text-center text-blue-400">
-            DevConnect Pro 🚀
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="w-[420px] p-8 rounded-3xl bg-white/10 backdrop-blur-2xl border border-white/20"
+        >
+          <h1 className="text-4xl font-bold text-center text-cyan-400 mb-6">
+            ⚡ DevConnect AI
           </h1>
 
           {!isLogin && (
@@ -64,7 +149,7 @@ function App() {
               name="name"
               placeholder="Name"
               onChange={handleChange}
-              className="w-full p-2 mb-3 rounded bg-gray-700"
+              className="w-full p-3 mb-3 rounded-xl bg-black/40 border border-gray-600"
             />
           )}
 
@@ -72,36 +157,27 @@ function App() {
             name="email"
             placeholder="Email"
             onChange={handleChange}
-            className="w-full p-2 mb-3 rounded bg-gray-700"
+            className="w-full p-3 mb-3 rounded-xl bg-black/40 border border-gray-600"
           />
 
           <input
             name="password"
-            placeholder="Password"
             type="password"
+            placeholder="Password"
             onChange={handleChange}
-            className="w-full p-2 mb-4 rounded bg-gray-700"
+            className="w-full p-3 mb-4 rounded-xl bg-black/40 border border-gray-600"
           />
 
-          {isLogin ? (
-            <button
-              onClick={handleLogin}
-              className="w-full bg-blue-500 py-2 rounded"
-            >
-              Login
-            </button>
-          ) : (
-            <button
-              onClick={handleSignup}
-              className="w-full bg-green-500 py-2 rounded"
-            >
-              Signup
-            </button>
-          )}
+          <button
+            onClick={isLogin ? handleLogin : handleSignup}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-bold"
+          >
+            {isLogin ? "Login" : "Create Account"}
+          </button>
 
           <p
-            className="text-center mt-4 text-blue-400 cursor-pointer"
             onClick={() => setIsLogin(!isLogin)}
+            className="mt-4 text-center text-cyan-400 cursor-pointer"
           >
             {isLogin ? "Create account" : "Already have account?"}
           </p>
@@ -110,109 +186,75 @@ function App() {
     );
   }
 
-  // ================= DASHBOARD =================
+  // ================= MAIN =================
   return (
-    <div className="flex min-h-screen bg-gray-950 text-white">
+    <div className="flex min-h-screen bg-black text-white">
 
       {/* SIDEBAR */}
-      <div className="w-64 bg-black p-5 space-y-6">
-        <h1 className="text-xl font-bold text-blue-400">
-          DevConnect 🚀
+      <div className="w-72 p-5 bg-white/5 backdrop-blur-xl border-r border-white/10">
+
+        <h1 className="text-2xl font-bold text-cyan-400">
+          ⚡ DevConnect AI
         </h1>
 
-        {[
-          { key: "dashboard", label: "Dashboard" },
-          { key: "resume", label: "Resume AI" },
-          { key: "portfolio", label: "Portfolio" },
-        ].map((item) => (
-          <div
-            key={item.key}
-            onClick={() => setActiveTab(item.key)}
-            className={`p-2 rounded cursor-pointer transition ${
-              activeTab === item.key
-                ? "bg-blue-600"
-                : "hover:bg-gray-800"
-            }`}
-          >
-            {item.label}
-          </div>
-        ))}
+        <p className="text-gray-400 mt-2">
+          Welcome 🚀 {user?.name}
+        </p>
+
+        <div className="mt-6 space-y-2">
+
+          {[
+            ["dashboard", "🏠 Dashboard"],
+            ["resume", "📄 Resume AI"],
+            ["portfolio", "💼 Portfolio"],
+            ["voice", "🎤 Voice Interview"],
+            ["admin", "⚡ Admin Panel"],
+          ].map(([key, label]) => (
+            <motion.div
+              key={key}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setActiveTab(key)}
+              className={`p-3 rounded-xl cursor-pointer ${
+                activeTab === key
+                  ? "bg-cyan-500 text-black font-bold"
+                  : "hover:bg-white/10"
+              }`}
+            >
+              {label}
+            </motion.div>
+          ))}
+
+        </div>
 
         <button
           onClick={logout}
-          className="bg-red-500 w-full py-2 rounded"
+          className="mt-8 w-full py-2 rounded-xl bg-red-500"
         >
           Logout
         </button>
       </div>
 
-      {/* MAIN */}
-      <div className="flex-1 p-6">
+      {/* MAIN CONTENT */}
+      <div className="flex-1 p-8">
 
-        {/* ================= DASHBOARD CARDS (FIXED + CLICKABLE) ================= */}
         {activeTab === "dashboard" && (
-          <motion.div>
-            <h1 className="text-3xl font-bold mb-2">
-              Welcome {user.name} 👋
-            </h1>
-
-            <p className="text-gray-400 mb-6">
-              AI Career Assistant Dashboard
-            </p>
-
-            {/* 🔥 FIXED CARDS SECTION */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-              {[
-                {
-                  title: "Resume AI",
-                  desc: "Analyze your resume instantly",
-                  tab: "resume",
-                },
-                {
-                  title: "Job Match",
-                  desc: "Check skill compatibility",
-                  tab: "resume",
-                },
-                {
-                  title: "Portfolio Builder",
-                  desc: "Create your developer profile",
-                  tab: "portfolio",
-                },
-              ].map((card, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => setActiveTab(card.tab)}
-                  className="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-lg cursor-pointer border border-gray-700 hover:border-blue-500 transition-all"
-                >
-                  <h2 className="text-xl font-bold text-white">
-                    {card.title}
-                  </h2>
-
-                  <p className="text-gray-400 mt-2">
-                    {card.desc}
-                  </p>
-
-                  <div className="mt-4 text-blue-400 text-sm">
-                    Click to open →
-                  </div>
-                </motion.div>
-              ))}
-
-            </div>
-          </motion.div>
+           <DashboardHome user={user} setActiveTab={setActiveTab} />
         )}
 
-        {/* RESUME */}
         {activeTab === "resume" && (
-          <ResumeUpload userId={user._id} />
+          <ResumeUpload userId={user?.email} />
         )}
 
-        {/* PORTFOLIO */}
         {activeTab === "portfolio" && (
-          <Portfolio userId={user._id} />
+          <Portfolio userId={user?.email} />
+        )}
+
+        {activeTab === "voice" && (
+          <MockInterviewVoice userId={user?.email} />
+        )}
+
+        {activeTab === "admin" && user && (
+          <AdminDashboard userId={user?.email} />
         )}
 
       </div>
